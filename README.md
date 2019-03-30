@@ -22,14 +22,11 @@ Download the Feed Reader project from github: https://github.com/Zundanus/feedre
 
 Open the index.html to run the Feed Reader Tests.
 
-## Tests in this Project
-
-
-
 ## Credits
 
 * The [JavaScript Testing course](https://www.udacity.com/course/ud549)
 * The [Jasmine Documentation](https://jasmine.github.io/)
+* Regex code for the url Validation (https://stackoverflow.com/questions/30970068/js-regex-url-validation)
 
 
 

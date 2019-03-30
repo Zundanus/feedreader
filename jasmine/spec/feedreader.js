@@ -4,35 +4,32 @@
  * all of the tests that will be run against your application.
  */
 
-/* We're placing all of our tests within the $() function,
- * since some of these tests may require DOM elements. We want
- * to ensure they don't run until the DOM is ready.
- */
 $(function() {
-  /* This is our first test suite - a test suite just contains
-   * a related set of tests. This suite is all about the RSS
-   * feeds definitions, the allFeeds variable in our application.
+  /* a test suite just contains a related set of tests. This suite is all about
+   *  the RSS feeds definitions, the allFeeds variable in our application.
    */
   describe('RSS Feeds', function() {
 
+    /**
+     * @description  validate with jasmin a given object to be a
+     *               valid and filled string
+     * @param {string} value - string to be validated
+     */
     function validateField(value) {
       expect(value).toBeDefined();
       expect(value).toBeString;
       expect(value.length).not.toBe(0);
     }
 
+    // Verifies if the feeds have been defined and that they are not empty
     it('are defined', function() {
       expect(allFeeds).toBeDefined();
       expect(allFeeds.length).not.toBe(0);
     });
 
 
-    /* TODO: Write a test that loops through each feed
-     * in the allFeeds object and ensures it has a URL defined
-     * and that the URL is not empty.
-
-     */
-    ///https://stackoverflow.com/questions/30970068/js-regex-url-validation
+    // Verifies if the feeds url porberty is filld and valid.
+    // rexex from https://stackoverflow.com/questions/30970068/js-regex-url-validation
     it('has valid url', function() {
       for (let feed of allFeeds) {
         validateField(feed.url);
@@ -40,11 +37,7 @@ $(function() {
       }
     });
 
-
-    /* TODO: Write a test that loops through each feed
-     * in the allFeeds object and ensures it has a name defined
-     * and that the name is not empty.
-     */
+    // Verifies if the feeds url porberty is filld and valid.
     it('has valid name', function() {
       for (let feed of allFeeds) {
         validateField(feed.name);
@@ -53,54 +46,79 @@ $(function() {
   });
 
 
-  /* TODO: Write a new test suite named "The menu" */
+  /*  a test suite for the menu validation" */
   describe('The menu', function() {
 
-    /* TODO: Write a test that ensures the menu element is
-     * hidden by default. You'll have to analyze the HTML and
-     * the CSS to determine how we're performing the
-     * hiding/showing of the menu element.
-     */
+    // Verifies that the menu element is hidden by default.
     it('menu hidden by default', function() {
       expect(document.querySelector('body').classList.contains('menu-hidden')).toBeTruthy();
     });
 
-    /* TODO: Write a test that ensures the menu changes
-     * visibility when the menu icon is clicked. This test
-     * should have two expectations: does the menu display when
-     * clicked and does it hide when clicked again.
-     */
+    /* Verifies that the menu changes visibility when the menu icon is clicked. */
     it('menu changes visibility', function() {
       document.querySelector('.menu-icon-link').click();
       expect(document.querySelector('body').classList.contains('menu-hidden')).not.toBeTruthy();
       document.querySelector('.menu-icon-link').click();
+      expect(document.querySelector('body').classList.contains('menu-hidden')).toBeTruthy();
     });
 
   });
 
-  /* TODO: Write a new test suite named "Initial Entries" */
+  /* test suite to validate the "Initial Entries" loading */
   describe('Initial Entries', function() {
-    /* TODO: Write a test that ensures when the loadFeed
-     * function is called and completes its work, there is at least
-     * a single .entry element within the .feed container.
-     * Remember, loadFeed() is asynchronous so this test will require
-     * the use of Jasmine's beforeEach and asynchronous done() function.
-     */
+    //async loading
+    beforeEach(function() {
+      return new Promise(function(resolve, reject) {
+        loadFeed(0, function() {
+          resolve();
+        });
+      });
+    });
+    // validate if the feeds are loaded
     it('loadFeed is loaded', function() {
-      expect('').toBe('NotImplementet');
+      const elements = document.querySelector('.feed').children;
+      expect(elements.length).not.toBe(0);
+
+      for (const element of elements) {
+        expect(element.querySelector('.entry')).toBeDefined();
+      }
     });
   });
 
 
-  /* TODO: Write a new test suite named "New Feed Selection" */
+  /* test suite to validate the "New Feed Selection" */
   describe('New Feed Selection', function() {
-    /* TODO: Write a test that ensures when a new feed is loaded
-     * by the loadFeed function that the content actually changes.
-     * Remember, loadFeed() is asynchronous.
+    let firstFeed = null;
+    let secondFeed = null;
+
+    /**
+     * @description  validate with jasmin a given object to be a
+     *               valid and filled string
+     * @returns {string} - returns the value of href that is in the first
+     *                     "entry-link" element
      */
+    function getEntryLink() {
+      const elements = document.querySelector('.entry-link');
+      if (elements != null) {
+        return elements.getAttribute("href");
+      }
+      return null;
+    }
+
+    /*load feed data for the test */
+    beforeEach(function() {
+      firstFeed = getEntryLink();
+      return new Promise(function(resolve, reject) {
+        loadFeed(1, function() {
+          secondFeed = getEntryLink();
+          resolve();
+        });
+      });
+    });
+
+    /* Verifies that when a new feed is loaded the data is changed   */
     it('new feed is loaded', function() {
-      expect('').toBe('NotImplementet');
+      expect(firstFeed).not.toBe(secondFeed);
     });
   });
-
 }());
